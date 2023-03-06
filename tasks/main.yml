@@ -8,27 +8,68 @@
   check_mode: false
   tags:
     - vector
-- name: Download
+
+- name: Download for apt
+  ansible.builtin.get_url:
+    url: "https://packages.timber.io/vector/0.27.0/vector_0.27.0-1_amd64.deb"
+    dest: "{{ vector_dir }}/vector_0.27.0-1.amd64.deb"
+  when: ansible_pkg_mgr == 'apt'
+
+- name: Install vector for apt
+  ansible.builtin.apt:
+    deb: "{{ vector_dir }}/vector_0.27.0-1.amd64.deb"
+  when: ansible_pkg_mgr == 'apt'
+
+- name: Download for yum
   ansible.builtin.get_url:
     url: "https://packages.timber.io/vector/0.27.0/vector-0.27.0-1.{{ vector_arch }}.rpm"
     dest: "{{ vector_dir }}/vector-0.27.0-1.{{ vector_arch }}.rpm"
   check_mode: false
   tags:
     - vector
-- name: Install package
+  when: ansible_pkg_mgr == 'yum'
+
+- name: Install package for yum
   become: true
   ansible.builtin.yum:
     name:
       - "{{ vector_dir }}/vector-0.27.0-1.{{ vector_arch }}.rpm"
   tags:
     - vector
-- name: Start vector service
-  become: true
-  ansible.builtin.systemd:
-    name: vector
-    state: started
-    daemon_reload: true
+  when: ansible_pkg_mgr == 'yum'
+
+- name: Download for dnf
+  ansible.builtin.get_url:
+    url: "https://packages.timber.io/vector/0.27.0/vector-0.27.0-1.{{ vector_arch }}.rpm"
+    dest: "{{ vector_dir }}/vector-0.27.0-1.{{ vector_arch }}.rpm"
   check_mode: false
-  ignore_errors: "{{ ansible_check_mode }}"
   tags:
     - vector
+  when: ansible_pkg_mgr == 'dnf'
+
+- name: Install package for dnf
+  become: true
+  ansible.builtin.dnf:
+    name:
+      - "{{ vector_dir }}/vector-0.27.0-1.{{ vector_arch }}.rpm"
+    disable_gpg_check: true
+  tags:
+    - vector
+  when: ansible_pkg_mgr == 'dnf'
+
+#- name: Start vector service
+#  become: true
+#  ansible.builtin.systemd:
+#    name: vector
+#    state: started
+#    daemon_reload: true
+#  check_mode: false
+#  ignore_errors: "{{ ansible_check_mode }}"
+#  tags:
+#    - vector
+- name: Start vector service
+  service:
+    name: "vector"
+    enabled: true
+    state: started
+  become: true

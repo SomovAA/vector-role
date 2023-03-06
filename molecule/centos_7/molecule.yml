@@ -8,19 +8,64 @@ lint: |
   ansible-lint .
   yamllint .
 platforms:
-  - name: centos_7
-    image: pycontribs/centos:7
-    command: /usr/sbin/init
+#  - name: centos_7
+#    image: pycontribs/centos:7
+#    command: /usr/sbin/init
+    #pre_build_image: false
+#    capabilities:
+#      - SYS_ADMIN
+#    tmpfs:
+#      - /run
+#      - /tmp
+#    volumes:
+#      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+
+#  - name: centos_8
+#    image: quay.io/centos/centos:stream8
+    #pre_build_image: false
+#    command: /sbin/init
+#    capabilities:
+#      - SYS_ADMIN
+#    tmpfs:
+#      - /run
+#      - /tmp
+#    volumes:
+#      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+
+  - name: debian_stretch
+    image: debian:stretch
+    #dockerfile: ../resources/Dockerfile.j2
+    # pre_build_image: true
+    #command: /sbin/init
+    #command: sleep 6666
+    privileged: true
     capabilities:
       - SYS_ADMIN
+    security_opts:
+      - seccomp=unconfined
     tmpfs:
       - /run
       - /tmp
     volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-  #- name: centos_8
-    #image: quay.io/centos/centos:stream8
-    #command: /sbin/init
+      - /sys/fs/cgroup:/sys/fs/cgroup
+#    env:
+#      ANSIBLE_USER: ansible
+#      SUDO_GROUP: sudo
+#      DEPLOY_GROUP: deployer
+#      container: docker
+
+#  - name: debian
+#    image: pycontribs/ubuntu:latest
+    #command: "/lib/systemd/systemd"
+    #pre_build_image: false
+#    privileged: true
+#    capabilities:
+#      - SYS_ADMIN
+#    tmpfs:
+#      - /run
+#      - /tmp
+#    volumes:
+#      - /sys/fs/cgroup:/sys/fs/cgroup
 provisioner:
   name: ansible
   options:
@@ -31,7 +76,6 @@ provisioner:
       all:
     group_vars:
       all:
-        #vector_dir: "./vector2"
         vector_dir: "/tmp/vector"
     host_vars:
       centos_7:

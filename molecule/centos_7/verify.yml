@@ -3,33 +3,26 @@
   hosts: all
   gather_facts: false
   vars:
-
+    vector_package_name: 'vector'
+    vector_service_name: 'vector.service'
   tasks:
   - name: 'Gather Local Services'
     ansible.builtin.service_facts:
     become: true
 
-  - name: Debug
-    debug:
-      var: ansible_facts.services
-
   - name: 'Assert Vector Service'
     ansible.builtin.assert:
       that:
-        - "'vector.service' in ansible_facts.services"
-        - "'running' == ansible_facts.services['vector.service'].state"
-        - "'disabled' == ansible_facts.services['vector.service'].status"
+        - "'{{ vector_service_name }}' in ansible_facts.services"
+        - "'running' == ansible_facts.services[vector_service_name].state"
+        - "'disabled' == ansible_facts.services[vector_service_name].status"
 
   - name: 'Gather Installed Packages'
     ansible.builtin.package_facts:
       manager: auto
     become: true
 
-  - name: Debug
-    debug:
-      var: ansible_facts.packages
-
   - name: 'Assert Vector Package'
     ansible.builtin.assert:
       that:
-        - "'vector' in ansible_facts.packages"
+        - "'{{ vector_package_name }}' in ansible_facts.packages"
