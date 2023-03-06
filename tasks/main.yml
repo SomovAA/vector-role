@@ -1,5 +1,6 @@
 ---
 - name: Create a directory
+  become: true
   ansible.builtin.file:
     path: "{{ vector_dir }}"
     state: directory
