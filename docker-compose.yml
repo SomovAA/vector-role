@@ -1,0 +1,12 @@
+---
+version: '3.1'
+
+services:
+  aragast:
+    image: aragast/netology:latest
+    container_name: aragast
+    privileged: true
+    command: sleep 777777
+    working_dir: /opt/vector-role
+    volumes:
+      - ./:/opt/vector-role
