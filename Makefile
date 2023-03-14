@@ -13,8 +13,11 @@ molecule-destroy:
 molecule-verify:
 	molecule verify -s default
 
+molecule-lint:
+	molecule lint -s default
+
 docker-up:
-	docker-compose up -d
+	docker-compose up -d --build
 
 docker-down:
 	docker-compose down
@@ -25,8 +28,11 @@ docker-down-clear:
 docker-exec-tox:
 	docker exec -it aragast sh -c 'tox'
 
+docker-exec-tox-r:
+	docker exec -it aragast sh -c 'tox -r'
+
 docker-exec-tox-list:
 	docker exec -it aragast sh -c 'tox -l'
 
 docker-exec-tox-e:
-	docker exec -it aragast sh -c 'tox -e py39-ansible30 -vvv'
+	docker exec -it aragast sh -c 'tox -e py37-ansible210'

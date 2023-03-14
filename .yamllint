@@ -2,6 +2,11 @@
 # Based on ansible-lint config
 extends: default
 
+ignore:
+  - .tox/
+  - .idea/
+  - .git/
+
 rules:
   braces:
     max-spaces-inside: 1

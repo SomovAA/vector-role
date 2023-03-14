@@ -1,15 +1,23 @@
 ---
 dependency:
   name: galaxy
+  enabled: false
 driver:
   name: podman
 lint: |
-  ansible-lint .
+  ansible-lint
   yamllint .
 platforms:
-  - name: instance
-    image: quay.io/centos/centos:stream8
-    pre_build_image: true
+  - name: centos_7
+    image: pycontribs/centos:7
+    command: /usr/sbin/init
+    capabilities:
+      - SYS_ADMIN
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
 provisioner:
   name: ansible
 verifier:
